@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.decorators import task
 from airflow.sensors.bash import BashSensor
+from airflow.sensors.filesystem import FileSensor
 from sensors.custom_sensor import MyCustomFileSensor
 
 
@@ -13,7 +14,7 @@ def final_task():
 
 
 with DAG(
-    dag_id="sensors_dag_demo",
+    dag_id="sensor_dag",
     schedule=None,
     start_date=datetime(2023, 8, 27),
     catchup=False,
@@ -36,6 +37,15 @@ with DAG(
         dag=dag
     )
 
+    
+    is_file_available = FileSensor(
+        task_id="is_file_available",
+        fs_conn_id="forex_path",
+        filepath="abc.txt",
+        poke_interval =5,
+        timeout=20
+    )
+
     end_task = final_task()
 
-    sleep_10sec_sensor >> check_file >> end_task
+    sleep_10sec_sensor >> check_file >> is_file_available >> end_task
