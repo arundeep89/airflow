@@ -31,21 +31,21 @@ with DAG(
 
     check_file = MyCustomFileSensor(
         task_id='check_file',
-        filepath='/opt/airflow/abc.txt',
+        filepath='/opt/airflow/dags/abc.txt',
         poke_interval=10,
         timeout=60,
         dag=dag
     )
 
     
-    is_file_available = FileSensor(
-        task_id="is_file_available",
-        fs_conn_id="forex_path",
-        filepath="abc.txt",
-        poke_interval =5,
-        timeout=20
-    )
+    # is_file_available = FileSensor(
+    #     task_id="is_file_available",
+    #     fs_conn_id="forex_path",
+    #     filepath="abc.txt",
+    #     poke_interval =5,
+    #     timeout=20
+    # )
 
     end_task = final_task()
 
-    sleep_10sec_sensor >> check_file >> is_file_available >> end_task
+    sleep_10sec_sensor >> check_file >> end_task
